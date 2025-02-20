@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Registrierung</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input { margin: 10px; padding: 8px; width: 200px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Matrix-Synapse Registrierung</h1>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Benutzername" required><br>
+        <input type="password" id="password" placeholder="Passwort" required><br>
+        <button type="submit">Registrieren</button>
+    </form>
+
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const responseEl = document.getElementById('response');
+            responseEl.textContent = 'Registriere...';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    responseEl.textContent = `Erfolgreich registriert! Matrix-ID: ${result.matrix_id}`;
+                } else {
+                    responseEl.textContent = `Fehler: ${result.error}`;
+                }
+            } catch (error) {
+                responseEl.textContent = 'Verbindung fehlgeschlagen.';
+            }
+        });
+    </script>
+</body>
+</html>
